@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Halaman Tim Medis</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+  
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+  
+      th, td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+      }
+  
+      th {
+        background-color: #f2f2f2;
+      }
+  
+      button {
+        margin: 5px;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 font-sans">
+    <!-- Header -->
+    <header class="bg-blue-500 text-white p-4">
+      <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-xl font-bold">PUSKESMAS.ID</h1>
+      </div>
+    </header>
+  
+    <div class="flex">
+      <!-- Sidebar -->
+      <aside class="w-1/4 bg-white shadow p-4 min-h-screen">
+        <h2 class="text-lg font-bold mb-4">Menu</h2>
+        <div class="image">
+          <img src="img/admin2.jpg" class="img-circle elevation-1 w-15 h-12  bg-black shadow" alt="User Image">
+        </div>
+        <div class="  bg-white-shadow info ml-2 mb-4">
+          <a href="#" class="d-block">Admin</a>
+        </div>
+        <ul>
+          <li><a href="dashboard.html" class="block py-2 px-4 hover:bg-gray-200 rounded">Dashboard</a></li>
+          <li><a href="profil.html" class="block py-2 px-4 hover:bg-gray-200 rounded">Profil</a></li>
+          <li><a href="poliklinik.html" class="block py-2 px-4 hover:bg-gray-200 rounded">Poliklinik</a></li>
+          <li><a href="timmedis.html" class="block py-2 px-4 bg-blue-100 rounded">Tim Medis</a></li>
+          <li><a href="pasien.html" class="block py-2 px-4 hover:bg-gray-200 rounded">Pasien</a></li>
+          <li><a href="login.html" class="block py-2 px-4 text-red-500 hover:bg-red-100 rounded">Logout</a></li>
+        </ul>
+      </aside>
+  
+      <!-- Main Content -->
+      <main class="flex-1 p-6 bg-white">
+        <p class="mb-6"><a href="index.html" class="text-blue-500 underline">Home</a></p>
+        <h1 class="text-2xl font-bold mb-6">Data Tim Medis</h1>
+        <table class="w-full border-collapse border border-gray-300">
+          <thead>
+            <tr>
+              <th class="border border-gray-300 p-2 bg-gray-100">No</th>
+              <th class="border border-gray-300 p-2 bg-gray-100">Nama</th>
+              <th class="border border-gray-300 p-2 bg-gray-100">Poliklinik</th>
+              <th class="border border-gray-300 p-2 bg-gray-100">Kontak</th>
+              <th class="border border-gray-300 p-2 bg-gray-100">Jadwal</th>
+              <th class="border border-gray-300 p-2 bg-gray-100">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="medisTableBody">
+            <!-- Data Tim Medis Akan Dimuat di Sini -->
+          </tbody>
+        </table>
+  
+        <button class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" onclick="window.location.href='project-aril1.html'">
+          Tambah Tim Medis
+        </button>
+      </main>
+    </div>
+  
+    <script>
+      const timMedis = [
+        { no: 1, nama: "Dr. Fadhel Omar Pasha", spesialisasi: "Umum", kontak: "+62 858-1193-9094", jadwal: "Senin - Jumat, 08:00 - 16:00" },
+        { no: 2, nama: "Dr. Tri Febriansyah", spesialisasi: "Gigi", kontak: "+62 852-1129-3271", jadwal: "Senin - Kamis, 09:00 - 14:00" },
+        { no: 3, nama: "Dr. Ariel Nurrizky H", spesialisasi: "Anak", kontak: "+62 895-4147-9142", jadwal: "Selasa - Jumat, 10:00 - 15:00" },
+        { no: 4, nama: "Dr. Friska", spesialisasi: "Bidan", kontak: "+62 838-9301-1118", jadwal: "Senin - Minggu, 24 Jam" },
+      ];
+  
+      function loadTimMedis() {
+        const storedData = JSON.parse(localStorage.getItem("userData")) || [];
+        return [...timMedis, ...storedData];
+      }
+  
+      function populateTable() {
+        const data = loadTimMedis();
+        const tableBody = document.getElementById("medisTableBody");
+        tableBody.innerHTML = ""; // Bersihkan isi tabel sebelum memuat data baru
+  
+        data.forEach((item, index) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td class="border border-gray-300 p-2 text-center">${index + 1}</td>
+            <td class="border border-gray-300 p-2">${item.nama}</td>
+            <td class="border border-gray-300 p-2">${item.spesialisasi}</td>
+            <td class="border border-gray-300 p-2">${item.kontak}</td>
+            <td class="border border-gray-300 p-2">${item.jadwal}</td>
+            <td class="border border-gray-300 p-2 text-center">
+              <button class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600" onclick="editRow(${index})">Edit</button>
+              <button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600" onclick="deleteRow(${index})">Hapus</button>
+            </td>
+          `;
+          tableBody.appendChild(row);
+        });
+      }
+  
+      function editRow(index) {
+        const data = loadTimMedis();
+        const item = data[index];
+  
+        const newNama = prompt("Edit Nama:", item.nama);
+        const newSpesialisasi = prompt("Edit Spesialisasi:", item.spesialisasi);
+        const newKontak = prompt("Edit Kontak:", item.kontak);
+        const newJadwal = prompt("Edit Jadwal:", item.jadwal);
+  
+        if (newNama && newSpesialisasi && newKontak && newJadwal) {
+          data[index] = { nama: newNama, spesialisasi: newSpesialisasi, kontak: newKontak, jadwal: newJadwal };
+          localStorage.setItem("userData", JSON.stringify(data.slice(timMedis.length))); // Simpan hanya data tambahan
+          populateTable(); // Reload tabel
+        }
+      }
+  
+      function deleteRow(index) {
+        const data = loadTimMedis();
+        if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+          data.splice(index, 1);
+          localStorage.setItem("userData", JSON.stringify(data.slice(timMedis.length))); // Simpan hanya data tambahan
+          populateTable(); // Reload tabel
+        }
+      }
+  
+      populateTable();
+    </script>
+  </body>
+  </html>
+  
+</body>
+
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login dan Registrasi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    function showTab(tab) {
+      const loginForm = document.getElementById('login-form');
+      const registerForm = document.getElementById('register-form');
+
+      if (tab === 'login') {
+        loginForm.classList.remove('hidden');
+        registerForm.classList.add('hidden');
+      } else {
+        loginForm.classList.add('hidden');
+        registerForm.classList.remove('hidden');
+      }
+    }
+
+    function login(event) {
+      event.preventDefault();
+
+      const username = document.getElementById("login-username").value;
+      const password = document.getElementById("login-password").value;
+
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+
+      const user = users.find(user => user.username === username && user.password === password);
+
+      if (user) {
+        alert("Login berhasil!");
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("loggedInUser", username);
+        window.location.href = "index.html";
+      } else {
+        alert("Username atau password salah!");
+      }
+    }
+
+    function register(event) {
+      event.preventDefault();
+
+      const username = document.getElementById("register-username").value;
+      const password = document.getElementById("register-password").value;
+
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+
+      const userExists = users.some(user => user.username === username);
+
+      if (userExists) {
+        alert("Username sudah terdaftar, silakan gunakan username lain.");
+      } else {
+        users.push({ username, password });
+        localStorage.setItem("users", JSON.stringify(users));
+        alert("Registrasi berhasil! Silakan login.");
+        showTab('login');
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-100 font-sans">
+  <div class="min-h-screen flex justify-center items-center">
+    <div class="bg-white shadow-lg rounded-lg w-[80%] max-w-4xl p-6">
+      <div id="auth-forms">
+        <div class="flex justify-around mb-6">
+            <h3 class="text-lg font-semibold mb-4">SELAMAT DATANG DI PUSKESMAS DEPOK</h3>
+        </div>
+
+        <!-- Form Login -->
+        <div id="login-form">
+          <h3 class="text-lg font-semibold mb-4">Silakan Login</h3>
+          <form onsubmit="login(event)">
+            <div class="mb-4">
+              <label for="login-username" class="block text-sm font-medium text-gray-700">Username:</label>
+              <input type="text" id="login-username" name="username" class="border border-gray-300 rounded-md w-full px-3 py-2 mt-1" required>
+            </div>
+            <div class="mb-4">
+              <label for="login-password" class="block text-sm font-medium text-gray-700">Password:</label>
+              <input type="password" id="login-password" name="password" class="border border-gray-300 rounded-md w-full px-3 py-2 mt-1" required>
+            </div>
+            <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">Login</button>
+           <center><button onclick="showTab('register')" class="px-6 py-1 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">Register</button></center> 
+          </form>
+        </div>
+
+        <!-- Form Registrasi -->
+        <div id="register-form" class="hidden">
+          <h3 class="text-lg font-semibold mb-4">Form Registrasi</h3>
+          <form onsubmit="register(event)">
+            <div class="mb-4">
+              <label for="register-username" class="block text-sm font-medium text-gray-700">Username:</label>
+              <input type="text" id="register-username" name="username" class="border border-gray-300 rounded-md w-full px-3 py-2 mt-1" required>
+            </div>
+            <div class="mb-4">
+              <label for="register-password" class="block text-sm font-medium text-gray-700">Password:</label>
+              <input type="password" id="register-password" name="password" class="border border-gray-300 rounded-md w-full px-3 py-2 mt-1" required>
+            </div>
+            <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">Daftar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
